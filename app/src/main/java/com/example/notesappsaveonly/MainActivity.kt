@@ -2,6 +2,7 @@ package com.example.notesappsaveonly
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -37,6 +38,9 @@ class MainActivity : AppCompatActivity() {
                 if(res > 0){
                     notes.add(n)
                     Toast.makeText(this, "Added successfully", Toast.LENGTH_LONG).show()
+                    notes = databaseSQLite.retrieveNotes()
+                    adapter = RecyclerViwAdapter(notes)
+                    rvMain.adapter = adapter
                 }else{
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
                 }

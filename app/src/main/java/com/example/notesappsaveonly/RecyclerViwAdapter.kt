@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.item_row.view.*
 
 class RecyclerViwAdapter(private val notes: List<String>): RecyclerView.Adapter<RecyclerViwAdapter.ViewItemHolder>() {
     class ViewItemHolder(itemView: View): RecyclerView.ViewHolder(itemView)
@@ -19,7 +20,11 @@ class RecyclerViwAdapter(private val notes: List<String>): RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: ViewItemHolder, position: Int) {
-        TODO("Not yet implemented")
+        val note = notes[position]
+
+        holder.itemView.apply {
+            tv_note.text = note
+        }
     }
 
     override fun getItemCount(): Int = notes.size
