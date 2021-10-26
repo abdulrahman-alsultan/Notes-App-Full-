@@ -13,10 +13,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var btn: Button
     private lateinit var ed: EditText
-    private lateinit var notes: MutableList<String>
+    private lateinit var notes: MutableList<NoteData>
     private lateinit var rvMain: RecyclerView
     private lateinit var adapter: RecyclerViwAdapter
-    private val databaseSQLite by lazy { DBHelper(applicationContext) }
+    private val databaseSQLite by lazy { DBHelper(applicationContext, this) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
 
         btn = findViewById(R.id.btn_submit)
         ed = findViewById(R.id.ed_note)
-        notes = mutableListOf()
+        notes = databaseSQLite.retrieveNotes()
         rvMain = findViewById(R.id.rvMain)
-        adapter = RecyclerViwAdapter(notes)
+        adapter = RecyclerViwAdapter(notes, this)
         rvMain.adapter = adapter
         rvMain.layoutManager = LinearLayoutManager(this)
 
@@ -36,10 +36,9 @@ class MainActivity : AppCompatActivity() {
             if(n.isNotEmpty()) {
                 val res = databaseSQLite.addNotes(n)
                 if(res > 0){
-                    notes.add(n)
                     Toast.makeText(this, "Added successfully", Toast.LENGTH_LONG).show()
                     notes = databaseSQLite.retrieveNotes()
-                    adapter = RecyclerViwAdapter(notes)
+                    adapter = RecyclerViwAdapter(notes, this)
                     rvMain.adapter = adapter
                 }else{
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
@@ -48,4 +47,24 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    fun delete(pk: Int){
+        databaseSQLite.deleteNote(pk)
+    }
+
+    fun notifyRecycler(){
+        notes = databaseSQLite.retrieveNotes()
+        adapter = RecyclerViwAdapter(notes, this)
+        rvMain.adapter = adapter
+    }
+
+
+    override fun onResume() {
+        notes = databaseSQLite.retrieveNotes()
+        adapter = RecyclerViwAdapter(notes, this)
+        rvMain.adapter = adapter
+        super.onResume()
+    }
+
+
 }
